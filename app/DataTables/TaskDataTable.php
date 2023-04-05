@@ -23,7 +23,7 @@ class TaskDataTable extends DataTable
             ->eloquent($query)->addIndexColumn()
             ->editColumn('image', function ($row) {
                 $url = $row->image;
-                $src = (str_starts_with($url, 'http') ? $url : asset('uploads/tasks/' . $url));
+                $src = (str_starts_with($url, 'http') ? $url : asset('uploads/task/' . $url));
 
                 return '<img src="' . $src . '" alt="' . $row->name . '" width="' . 40 . '"  />';
             })

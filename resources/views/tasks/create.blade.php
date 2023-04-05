@@ -1,4 +1,4 @@
-<x-modal title="Create course">
+<x-modal title="Create Tasks">
     <form action="{{ route('tasks.store') }}" method="POST" enctype="multipart/form-data">
         @csrf
         <div class="form-group mb-2">

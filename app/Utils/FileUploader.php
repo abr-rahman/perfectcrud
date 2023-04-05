@@ -5,7 +5,7 @@ namespace App\Utils;
 use Exception;
 use Intervention\Image\Facades\Image;
 
-class FileUploaderUtils
+class FileUploader
 {
     public function upload(object $file, string $filePath = 'uploads/', $width = null, $height = null): string|array
     {
