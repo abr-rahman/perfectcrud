@@ -6,11 +6,18 @@ use App\DataTables\TaskDataTable;
 use App\Models\Task;
 use App\Http\Requests\StoreTaskRequest;
 use App\Http\Requests\UpdateTaskRequest;
+use App\Interfaces\TaskServiceInterface;
 use App\Utils\FileUploader;
 use Illuminate\Http\Request;
 
 class TaskController extends Controller
 {
+    protected $taskService;
+
+    public function __construct(TaskServiceInterface $taskService)
+    {
+        $this->taskService = $taskService;
+    }
     /**
      * Display a listing of the resource.
      */
@@ -31,17 +38,21 @@ class TaskController extends Controller
      */
     public function store(StoreTaskRequest $request, FileUploader $uploader)
     {
-        $imageName = null;
+        // $imageName = null;
 
-        if ($request->hasFile('image')) {
-            $imageName = $uploader->upload($request->file('image'), 'uploads/task/', 600, 400);
-        }
-        Task::create([
-            'name' => $request->name,
-            'phone' => $request->phone,
-            'image' => $imageName,
-            'description' => $request->description,
-        ]);
+        // if ($request->hasFile('image')) {
+        //     $imageName = $uploader->upload($request->file('image'), 'uploads/task/', 600, 400);
+        // }
+        // Task::create([
+        //     'name' => $request->name,
+        //     'phone' => $request->phone,
+        //     'image' => $imageName,
+        //     'description' => $request->description,
+        // ]);
+
+        $task = $this->taskService->store($request->validated());
+
+        // return response()->json('Task created successfully');
         return back()->with('success', 'Task created successfully!');
     }
 
@@ -58,7 +69,8 @@ class TaskController extends Controller
      */
     public function edit($id)
     {
-        $task = Task::find($id);
+        $task = $this->taskService->find($id);
+        // $task = Task::find($id);
         $task->image = (str_starts_with($task->image, 'http')) ? $task->image : asset('uploads/task/' . $task->image);
         return view('tasks.edit', compact('task'));
     }
@@ -74,7 +86,7 @@ class TaskController extends Controller
         $update->description = $request->description;
 
         if ($request->hasFile('image')) {
-            $newFile = $uploader->upload($request->file('image'), 'uploads/task/', 1090, 413);
+            $newFile = $uploader->upload($request->file('image'), 'uploads/task/', 600, 400);
             if ((isset($update->image) && isset($newFile))) {
                 $existingFile = public_path('uploads/task/' . $update->image);
                 if (\file_exists($existingFile)) {
@@ -93,13 +105,16 @@ class TaskController extends Controller
      */
     public function destroy(Task $task)
     {
-        $existingFile = public_path('uploads/task/' . $task->image);
+        if (!$task->image == null) {
+            $existingFile = \public_path('uploads/task/' . $task->image);
 
-        if (\file_exists($existingFile)) {
-            unlink($existingFile);
+            if (file_exists($existingFile)) {
+                unlink($existingFile);
+            }
         }
         $task->delete();
-
         return response()->json('Deleted successfully!');
     }
+
+
 }
