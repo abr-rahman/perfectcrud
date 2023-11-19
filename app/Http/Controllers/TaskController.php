@@ -7,8 +7,11 @@ use App\Models\Task;
 use App\Http\Requests\StoreTaskRequest;
 use App\Http\Requests\UpdateTaskRequest;
 use App\Interfaces\TaskServiceInterface;
+use App\Models\User;
+use App\Notifications\AlertNotification;
 use App\Utils\FileUploader;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Notification;
 
 class TaskController extends Controller
 {
@@ -38,17 +41,9 @@ class TaskController extends Controller
      */
     public function store(StoreTaskRequest $request, FileUploader $uploader)
     {
-        // $imageName = null;
 
-        // if ($request->hasFile('image')) {
-        //     $imageName = $uploader->upload($request->file('image'), 'uploads/task/', 600, 400);
-        // }
-        // Task::create([
-        //     'name' => $request->name,
-        //     'phone' => $request->phone,
-        //     'image' => $imageName,
-        //     'description' => $request->description,
-        // ]);
+        $user = User::first();
+        Notification::send($user, new AlertNotification);
 
         $task = $this->taskService->store($request->validated());
 
