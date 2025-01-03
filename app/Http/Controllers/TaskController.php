@@ -34,12 +34,7 @@ class TaskController extends Controller
 
     public function store(StoreTaskRequest $request, FileUploader $uploader)
     {
-
-        $user = User::first();
-        Notification::send($user, new AlertNotification);
-
         $task = $this->taskService->store($request->validated());
-
         // return response()->json('Task created successfully');
         return back()->with('success', 'Task created successfully!');
     }
