@@ -22,7 +22,7 @@ class StoreTaskRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required',
+            'name' => 'required|unique:tasks,name,except,id',
             'phone' => 'required',
             'image' => 'nullable',
             'description' => 'nullable',

@@ -21,24 +21,17 @@ class TaskController extends Controller
     {
         $this->taskService = $taskService;
     }
-    /**
-     * Display a listing of the resource.
-     */
+
     public function index(Request $request, TaskDataTable $dtaTable)
     {
         return $dtaTable->render('tasks.index');
     }
-    /**
-     * Show the form for creating a new resource.
-     */
+
     public function create()
     {
         return view('tasks.create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(StoreTaskRequest $request, FileUploader $uploader)
     {
 
@@ -51,28 +44,13 @@ class TaskController extends Controller
         return back()->with('success', 'Task created successfully!');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Task $task)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit($id)
     {
         $task = $this->taskService->find($id);
-        // $task = Task::find($id);
         $task->image = (str_starts_with($task->image, 'http')) ? $task->image : asset('uploads/task/' . $task->image);
         return view('tasks.edit', compact('task'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(UpdateTaskRequest $request, $id, FileUploader $uploader)
     {
         $update = Task::find($id);
@@ -95,9 +73,6 @@ class TaskController extends Controller
         return back()->with('success', 'Updated successfully!');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(Task $task)
     {
         if (!$task->image == null) {
@@ -110,6 +85,4 @@ class TaskController extends Controller
         $task->delete();
         return response()->json('Deleted successfully!');
     }
-
-
 }
